@@ -1,0 +1,96 @@
+---
+title: "Lab02 Assignment - Tulika Singh"
+author: "Tulika"
+date: "15 March 2016"
+output: word_document
+---
+
+
+```{r}
+
+#Ques.1
+zagat <- read.csv ("C:/Tulika/SP Jain/Course/Business Applications in Machine Learning/Day2/zagat.csv", header = T)  
+head(zagat)
+attach(zagat)
+
+```
+
+```{r}
+#Ques.2
+set.seed(100)
+train = sample(1:1241,1000)   # take the vector and no. of observations from the sample
+head(train)
+test = - train
+data_train <- zagat[train,-1 ]                   
+dim(data_train)
+data_test <- zagat[test,-1 ]
+dim(data_test)
+```
+
+```{r}
+#Ques.3
+model = lm(log(Price) ~. , data = data_train)
+summary(model)
+
+
+#Ans.3 Food,Decor & Service are statistically significant as P value is less than 0.05 
+#R square value is 0.6641 
+
+# We have used log of Price with which our R square has increased
+
+```
+
+```{r}
+#Ques.4
+
+#There are many ways to check collinearity
+#1. Create the correlation matrix
+#2. Look at the correlation plot
+#3. Look at the VIF
+
+#correlations
+round(cor(data_train),2)
+
+#visualize the correlations
+library(corrplot)
+corr_matrix = cor(data_train)
+corrplot(corr_matrix, order = "hclust")
+
+# VIF                 
+library(car)
+vif(model)           
+
+# According to VIF output, we can see no variable is affecting the collinearity in the model.
+# This is because all the variables must have  high VIF(VIF should be greater than 5) , VIF = 1/(1-R^2)
+
+
+model = lm(log(Price) ~. -Food, data = data_train)
+summary(model)
+
+
+model = lm(log(Price) ~. -Decor, data = data_train)
+summary(model)
+
+model = lm(log(Price) ~. -Service, data = data_train)
+summary(model)
+
+# No we don't need to delete any of the predictors as after deleting all the predictors(one by one) also #as shown above, R squared is coming out to be less than original model R squared i.e. 0.6641. Also all
+#the VIF is not greater than five. So no variable is affecting the collinearity of the model.
+```
+
+
+```{r}
+#Ques.5
+#Assess the model using testing data
+testing_y = data_test$Price
+
+# Predict the predicted y
+predicted_y = predict(model,data_test)
+error = testing_y - (predicted_y)
+error_squared = error^2
+MSE = mean(error_squared)
+MSE  
+# MSE for the model is coming out to be 1201.502
+```
+
+

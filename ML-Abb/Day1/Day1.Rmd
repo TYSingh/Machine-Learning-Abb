@@ -1,0 +1,68 @@
+---
+title: "Introduction to R Markdown"
+author: "Tulika"
+date: "14 March 2016"
+output: word_document
+---
+
+In this document Google stock value from Jan01,2015 until yesterday 2016
+
+For this purpose, we will use `tseries`  *Rpackage*. I will first load `tseries`  *Rpackage* into R environment.
+
+
+```{r,warning=FALSE}
+library(tseries)
+```
+
+Next, I will use the get.hist.quote() function to download the historical financial data from a given provider (Yahoo is the default).
+
+```{r}
+
+google.data = get.hist.quote(instrument = "goog"
+                             ,start = "2015-01-01", 
+                             end= "2016-03-13",
+                             quote="AdjClose")
+
+```
+
+
+Next, I will like to get some summary statistics using the `summary()` function.
+
+```{r}
+
+goog.close = as.numeric(google.data$AdjClose)
+summary_stat = summary(goog.close)
+
+head(goog.close)
+summary_stat
+```
+
+We can tabulate our summary as follows:
+
+Min | 1st Quart | 2nd Quart | Mean | 3rd Quart | Max
+----|-----------|-----------|------|-----------|----
+`r summary_stat[1]` | `r summary_stat[2]` | `r summary_stat[3]` |`r summary_stat[4]` | `r summary_stat[5]`| `r summary_stat[6]` |
+
+We can visualize our stocks data:
+
+```{r,tidy=TRUE}
+plot(google.data,
+     xlab = "Time",
+     ylab = "Google Stock Price")
+```
+
+# Sources
+
+We have a list of many useful sources to learn R Markdown:
+
+* [Rstudio](http://rmarkdown.rstudio.com/)
+* [Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+
+We can have number bullets:
+
+#. hjgdash ds
+#. ksjdlkd ks
+#. hjdshga sh
+
+
+     
